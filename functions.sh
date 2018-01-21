@@ -23,17 +23,17 @@ function multimedia_pdf_page_extract() {
 
 
 #***************************[video]*******************************************
-# 2018 01 11
+# 2018 01 14
 
 function multimedia_video_cut_simple() {
 
     if [ $# -ne 3 ]; then
         echo "Error - multimedia_video_cut_simple needs 3 parameters"
         echo "        #1: start-position (e.g. 0:00:00 == start of video)"
-        echo "        #2: end-position   (e.g. 0:01:23 == 1min 23s)"
+        echo "        #2: duration       (e.g. 0:01:23 == 1min 23s)"
         echo "        #3: video name     (e.g. stereodata.ogv)"
         echo "The output file will be named \"inputfile_cut_start-end.ext\"."
-        echo "    (e.g. stereodata_cut_0_00_00-0_01_23.ogv)"
+        echo "    (e.g. stereodata_cut_0_00_00-d0_01_23.ogv)"
 
         return -1
     fi
