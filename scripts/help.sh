@@ -1,11 +1,15 @@
 #!/bin/bash
 
 #***************************[help]********************************************
-# 2018 04 1
+# 2018 08 22
 function multimedia_help() {
 
     echo ""
     echo "### multimedia_help ###"
+    echo ""
+    echo "files"
+    echo "  multimedia_filename_clean"
+    echo "  multimedia_filename_add"
     echo ""
     echo "pdf"
     echo "  multimedia_pdf_page_extract"

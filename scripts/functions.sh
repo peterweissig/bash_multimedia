@@ -1,3 +1,153 @@
+#***************************[files]*******************************************
+# 2018 08 22
+
+function multimedia_filename_clean() {
+
+    if [ $# -gt 1 ]; then
+        echo "Error - multimedia_filename_clean needs 0-1 parameters"
+        echo "       [#1:]search-expression (e.g. \"*.jpg\")"
+        echo "            leave option empty to rename regular files"
+        echo "            for wildcard-expressions please use double-quotes"
+        echo "The files will be renamed from"
+        echo "  \"file ä ß Ö.ext\" to \"file_ae_ss_Oe.ext\"."
+
+        return -1
+    fi
+
+    # init variables
+    changed=0
+    corrected=()
+
+    # read all filenames
+    readarray -t filelist <<< "$(ls $1)"
+
+    # iterate over all files
+    for i in ${!filelist[@]}; do
+        # replace bad letters
+        corrected[i]=$(echo "${filelist[$i]}" | \
+          sed 's/[ /\:]\+/_/g' | \
+          sed 's/ä/ae/; s/ü/ue/; s/ö/oe/; s/Ä/Ae/; s/Ü/Ue/; s/Ö/Oe/g' | \
+          sed 's/ß/ss/g');
+
+        # check if filename would change
+        if [ "${filelist[$i]}" != "${corrected[$i]}" ]; then
+            echo "  \"${filelist[$i]}\" ==> \"${corrected[$i]}\""
+            changed=1
+        fi
+    done
+
+    if [ $changed -eq 0 ]; then
+        # output if nothing was changed
+        echo "All files comply :-)"
+        return
+    fi
+
+    # ask user if continuing
+    echo -n "Do you wish to continue (N/y)?"
+    read answer
+    if [ "$answer" != "y" ] && [ "$answer" != "Y" ] && \
+      [ "$answer" != "yes" ]; then
+
+        echo "multimedia_filename_clean: Aborted."
+        return
+    fi
+
+    # iterate over all files
+    for i in ${!filelist[@]}; do
+        # check for errors
+        if [ $? -ne 0 ]; then
+            echo "multimedia_filename_clean: Stopping because of an error."
+            return -1;
+        fi
+
+        # check if filename would change
+        if [ "${filelist[$i]}" != "${corrected[$i]}" ]; then
+            echo "renaming \"${corrected[$i]}\""
+            mv "${filelist[$i]}" "${corrected[$i]}"
+        fi
+    done
+}
+
+function multimedia_filename_add() {
+
+    if [ $# -lt 1 ] || [ $# -gt 2 ]; then
+        echo "Error - multimedia_filename_add needs 1-2 parameters"
+        echo "        #1: additional String (e.g. _new)"
+        echo "       [#2:]search-expression (e.g. \"*.jpg\")"
+        echo "            leave option empty to rename regular files"
+        echo "            for wildcard-expressions please use double-quotes"
+        echo "The files will be renamed from"
+        echo "  \"file.jpg\" to \"file_new.jpg\"."
+
+        return -1
+    fi
+
+
+    # init variables
+    changed=0
+    updated=()
+
+    # read all filenames
+    readarray -t filelist <<< "$(ls $2)"
+
+    # iterate over all files
+    for i in ${!filelist[@]}; do
+        # split filename
+        path="$(dirname ${filelist[$i]})"
+        if [ "$path" == "." ]; then
+            path="";
+        else
+            path="${path}/";
+        fi
+
+        baseext="$(basename ${filelist[$i]})"
+        base="${baseext%.*}"
+        ext="${baseext/*./.}"
+        if [ "$ext" == "$baseext" ]; then
+            ext="";
+        fi
+
+        # create new name
+        updated[$i]="${path}${base}${1}${ext}"
+
+        # rename file
+        echo "  \"${filelist[$i]}\" ==> \"${updated[$i]}\""
+        changed=1
+    done
+
+    if [ $changed -eq 0 ]; then
+        # output if nothing was changed
+        echo "No files found :-("
+        return
+    fi
+
+    # ask user if continuing
+    echo -n "Do you wish to continue (N/y)?"
+    read answer
+    if [ "$answer" != "y" ] && [ "$answer" != "Y" ] && \
+      [ "$answer" != "yes" ]; then
+
+        echo "multimedia_filename_add: Aborted."
+        return
+    fi
+
+    # iterate over all files
+    for i in ${!filelist[@]}; do
+        # check for errors
+        if [ $? -ne 0 ]; then
+            echo "multimedia_filename_add: Stopping because of an error."
+            return -1;
+        fi
+
+        # check if filename would change
+        if [ "${filelist[$i]}" != "${updated[$i]}" ]; then
+            echo "renaming \"${updated[$i]}\""
+            mv "${filelist[$i]}" "${updated[$i]}"
+        fi
+    done
+}
+
+
 #***************************[documents]***************************************
 # 2018 01 11
 
