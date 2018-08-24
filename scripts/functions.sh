@@ -1,16 +1,29 @@
 #***************************[files]*******************************************
-# 2018 08 22
+# 2018 08 24
 
 function multimedia_filename_clean() {
 
-    if [ $# -gt 1 ]; then
-        echo "Error - multimedia_filename_clean needs 0-1 parameters"
-        echo "       [#1:]search-expression (e.g. \"*.jpg\")"
-        echo "            leave option empty to rename regular files"
-        echo "            for wildcard-expressions please use double-quotes"
-        echo "The files will be renamed from"
-        echo "  \"file ä ß Ö.ext\" to \"file_ae_ss_Oe.ext\"."
+    # print help
+    if [ "$1" == "-h" ]; then
+        echo "$FUNCNAME [<filter>]"
 
+        return
+    fi
+    if [ "$1" == "--help" ]; then
+        echo "$FUNCNAME needs 0-1 parameters"
+        echo "    [#1:]search-expression (e.g. \"*.jpg\")"
+        echo "         leave option empty to rename regular files"
+        echo "         for wildcard-expressions please use double-quotes"
+        echo "The files will be renamed to remove ä, ü, ö, ß and spaces."
+        echo "  (e.g. from \"file ä ß Ö.ext\" to file_ae_ss_Oe.ext)"
+
+        return
+    fi
+
+    # check parameter
+    if [ $# -gt 1 ]; then
+        echo "$FUNCNAME: Parameter Error."
+        $FUNCNAME --help
         return -1
     fi
 
@@ -48,7 +61,7 @@ function multimedia_filename_clean() {
     if [ "$answer" != "y" ] && [ "$answer" != "Y" ] && \
       [ "$answer" != "yes" ]; then
 
-        echo "multimedia_filename_clean: Aborted."
+        echo "$FUNCNAME: Aborted."
         return
     fi
 
@@ -56,7 +69,7 @@ function multimedia_filename_clean() {
     for i in ${!filelist[@]}; do
         # check for errors
         if [ $? -ne 0 ]; then
-            echo "multimedia_filename_clean: Stopping because of an error."
+            echo "$FUNCNAME: Stopping because of an error."
             return -1;
         fi
 
@@ -68,27 +81,41 @@ function multimedia_filename_clean() {
     done
 }
 
-function multimedia_filename_add() {
+function multimedia_filename_expand() {
 
-    if [ $# -lt 1 ] || [ $# -gt 2 ]; then
-        echo "Error - multimedia_filename_add needs 1-2 parameters"
-        echo "        #1: additional String (e.g. _new)"
-        echo "       [#2:]search-expression (e.g. \"*.jpg\")"
-        echo "            leave option empty to rename regular files"
-        echo "            for wildcard-expressions please use double-quotes"
-        echo "The files will be renamed from"
-        echo "  \"file.jpg\" to \"file_new.jpg\"."
+    # print help
+    if [ "$1" == "-h" ]; then
+        echo "$FUNCNAME <prefix> [<suffix>] [<filter>]"
 
-        return -1
+        return
+    fi
+    if [ "$1" == "--help" ]; then
+        echo "$FUNCNAME needs 1-3 parameters"
+        echo "     #1: additional prefix (e.g. file_)"
+        echo "    [#2:]additional suffix (e.g. _new)"
+        echo "    [#3:]search-expression (e.g. \"*.jpg\")"
+        echo "         leave option empty to rename regular files"
+        echo "         for wildcard-expressions please use double-quotes"
+        echo "The output files will be named"
+        echo "  \"<path><prefix><filename><suffix><extension>\"."
+        echo "  (e.g. from image.jpg to file_image_new.jpg)."
+
+        return
     fi
 
+    # check parameter
+    if [ $# -lt 1 ] || [ $# -gt 3 ]; then
+        echo "$FUNCNAME: Parameter Error."
+        multimedia_filename_expand --help
+        return -1
+    fi
 
     # init variables
     changed=0
     updated=()
 
     # read all filenames
-    readarray -t filelist <<< "$(ls $2)"
+    readarray -t filelist <<< "$(ls $3)"
 
     # iterate over all files
     for i in ${!filelist[@]}; do
@@ -108,7 +135,7 @@ function multimedia_filename_add() {
         fi
 
         # create new name
-        updated[$i]="${path}${base}${1}${ext}"
+        updated[$i]="${path}${1}${base}${2}${ext}"
 
         # rename file
         echo "  \"${filelist[$i]}\" ==> \"${updated[$i]}\""
@@ -127,7 +154,7 @@ function multimedia_filename_add() {
     if [ "$answer" != "y" ] && [ "$answer" != "Y" ] && \
       [ "$answer" != "yes" ]; then
 
-        echo "multimedia_filename_add: Aborted."
+        echo "$FUNCNAME: Aborted."
         return
     fi
 
@@ -135,7 +162,7 @@ function multimedia_filename_add() {
     for i in ${!filelist[@]}; do
         # check for errors
         if [ $? -ne 0 ]; then
-            echo "multimedia_filename_add: Stopping because of an error."
+            echo "$FUNCNAME: Stopping because of an error."
             return -1;
         fi
 
@@ -149,18 +176,32 @@ function multimedia_filename_add() {
 
 
 #***************************[documents]***************************************
-# 2018 01 11
+# 2018 08 24
 
 function multimedia_pdf_page_extract() {
 
-    if [ $# -ne 3 ]; then
-        echo "Error - multimedia_pdf_page_extract needs 3 parameters"
-        echo "        #1: number of first page (e.g. 1 == first page)"
-        echo "        #2: number of last page  (e.g. 04)"
-        echo "        #3: document name        (e.g. paper.pdf)"
-        echo "The output file will be named \"inputfile_pXX-pYY.pdf\"."
-        echo "    (e.g. paper_p1-p04.pdf)"
+    # print help
+    if [ "$1" == "-h" ]; then
+        echo "$FUNCNAME <start> <end> <filename>"
 
+        return
+    fi
+    if [ "$1" == "--help" ]; then
+        echo "$FUNCNAME needs 3 parameters"
+        echo "     #1: number of first page (e.g. 1 == first page)"
+        echo "     #2: number of last page  (e.g. 04)"
+        echo "     #3: document name        (e.g. paper.pdf)"
+        echo "The output file will be named"
+        echo "  \"<filename>_p<start>-p<end>.pdf\"."
+        echo "  (e.g. paper_p1-p04.pdf)"
+
+        return
+    fi
+
+    # check parameter
+    if [ $# -ne 3 ]; then
+        echo "$FUNCNAME: Parameter Error."
+        $FUNCNAME --help
         return -1
     fi
 
@@ -173,41 +214,71 @@ function multimedia_pdf_page_extract() {
 
 
 #***************************[video]*******************************************
-# 2018 01 14
-
-function multimedia_video_cut_simple() {
-
-    if [ $# -ne 3 ]; then
-        echo "Error - multimedia_video_cut_simple needs 3 parameters"
-        echo "        #1: start-position (e.g. 0:00:00 == start of video)"
-        echo "        #2: duration       (e.g. 0:01:23 == 1min 23s)"
-        echo "        #3: video name     (e.g. stereodata.ogv)"
-        echo "The output file will be named \"inputfile_cut_start-end.ext\"."
-        echo "    (e.g. stereodata_cut_0_00_00-d0_01_23.ogv)"
-
-        return -1
-    fi
-
-    filename_path="$(dirname "$3")"
-    filename_basename="$(basename "$3")"
-    filename_name="${filename_basename%%.*}"
-    filename_cut="__cut_${1//:/_}-${2//:/_}"
-    filename_ext="${filename_basename#*.}"
-    filename="${filename_path}/${filename_name}${filename_cut}.${filename_ext}"
-
-    echo "avconv -i $3 -c:a copy -c:v copy -ss $1 -t $2 $filename"
-    avconv -i "$3" -c:a copy -c:v copy -ss "$1" -t "$2" "$filename"
-}
+# 2018 08 24
 
 function multimedia_video_info() {
 
-    if [ $# -ne 1 ]; then
-        echo "Error - multimedia_video_info needs 1 parameter"
-        echo "        #1: video name     (e.g. stereodata.ogv)"
+    # print help
+    if [ "$1" == "-h" ]; then
+        echo "$FUNCNAME <filename>"
 
+        return
+    fi
+    if [ "$1" == "--help" ]; then
+        echo "$FUNCNAME needs 1 parameter"
+        echo "     #1: video name     (e.g. stereodata.ogv)"
+
+        return
+    fi
+
+    # check parameter
+    if [ $# -ne 1 ]; then
+        echo "$FUNCNAME: Parameter Error."
+        multimedia_video_info --help
         return -1
     fi
 
+    # print infos
     echo "ffprobe $1"
     ffprobe "$1"
+}
+
+function multimedia_video_cut_simple() {
+
+    # print help
+    if [ "$1" == "-h" ]; then
+        echo "$FUNCNAME <start> <duration> <filename>"
+
+        return
+    fi
+    if [ "$1" == "--help" ]; then
+        echo "$FUNCNAME needs 3 parameters"
+        echo "     #1: start-position (e.g. 0:00:00 == start of video)"
+        echo "     #2: duration       (e.g. 0:01:23 == 1min 23s)"
+        echo "     #3: video name     (e.g. stereodata.ogv)"
+        echo "The output file will be named"
+        echo "  \"<filename>__cut_<start>-d<duration>.ext\"."
+        echo "  (e.g. stereodata__cut_0_00_00-d0_01_23.ogv)"
+
+        return
+    fi
+
+    # check parameter
+    if [ $# -ne 3 ]; then
+        echo "$FUNCNAME: Parameter Error."
+        $FUNCNAME --help
+        return -1
+    fi
+
+    # create filename
+    filename_path="$(dirname "$3")"
+    filename_basename="$(basename "$3")"
+    filename_name="${filename_basename%%.*}"
+    filename_cut="__cut_${1//:/_}-d${2//:/_}"
+    filename_ext="${filename_basename#*.}"
+    filename="${filename_path}/${filename_name}${filename_cut}.${filename_ext}"
+
+    # create video
+    echo "avconv -i $3 -c:a copy -c:v copy -ss $1 -t $2 $filename"
+    avconv -i "$3" -c:a copy -c:v copy -ss "$1" -t "$2" "$filename"
 }
