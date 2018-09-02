@@ -108,7 +108,7 @@ function multimedia_filename_expand() {
     # check parameter
     if [ $# -lt 1 ] || [ $# -gt 3 ]; then
         echo "$FUNCNAME: Parameter Error."
-        multimedia_filename_expand --help
+        $FUNCNAME --help
         return -1
     fi
 
@@ -216,7 +216,7 @@ function multimedia_pdf_page_extract() {
 
 
 #***************************[video]*******************************************
-# 2018 08 24
+# 2018 09 03
 
 function multimedia_video_info() {
 
@@ -236,7 +236,7 @@ function multimedia_video_info() {
     # check parameter
     if [ $# -ne 1 ]; then
         echo "$FUNCNAME: Parameter Error."
-        multimedia_video_info --help
+        $FUNCNAME --help
         return -1
     fi
 
