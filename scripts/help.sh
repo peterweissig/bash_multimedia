@@ -1,11 +1,12 @@
 #!/bin/bash
 
 #***************************[help]********************************************
-# 2018 08 24
+# 2018 09 03
+
 function multimedia_help() {
 
     echo ""
-    echo "### multimedia_help ###"
+    echo "### $FUNCNAME ###"
     echo ""
     echo "files"
     echo -n "  "; multimedia_filename_clean -h
