@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #***************************[files]*******************************************
-# 2018 09 03
+# 2018 09 26
 
 function multimedia_filename_clean() {
 
@@ -41,7 +41,7 @@ function multimedia_filename_clean() {
         # replace bad letters
         corrected[i]=$(echo "${filelist[$i]}" | \
           sed 's/[ /\:]\+/_/g' | \
-          sed 's/ä/ae/; s/ü/ue/; s/ö/oe/; s/Ä/Ae/; s/Ü/Ue/; s/Ö/Oe/g' | \
+          sed 's/ä/ae/g; s/ü/ue/g; s/ö/oe/g; s/Ä/Ae/g; s/Ü/Ue/g; s/Ö/Oe/g' | \
           sed 's/ß/ss/g');
 
         # check if filename would change
