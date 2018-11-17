@@ -1,9 +1,9 @@
 #!/bin/bash
 
 #***************************[paths and files]*********************************
-# 2018 04 01
+# 2018 11 17
 
-temp_local_path="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd )/"
+temp_local_path="$(cd "$(dirname "${BASH_SOURCE}")" && pwd )/"
 
 
 #***************************[source]******************************************
