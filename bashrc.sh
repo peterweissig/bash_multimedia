@@ -19,8 +19,9 @@ temp_local_path="$(cd "$(dirname "${BASH_SOURCE}")" && pwd )/"
 
 
 #***************************[source]******************************************
-# 2018 11 15
+# 2019 02 20
 
 . ${temp_local_path}scripts/pdf_functions.sh
+. ${temp_local_path}scripts/image_functions.sh
 . ${temp_local_path}scripts/video_functions.sh
 . ${temp_local_path}scripts/help.sh

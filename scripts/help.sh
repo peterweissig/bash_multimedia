@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #***************************[help]********************************************
-# 2018 09 27
+# 2019 02 20
 
 function multimedia_help() {
 
@@ -10,6 +10,9 @@ function multimedia_help() {
     echo ""
     echo "pdf"
     echo -n "  "; multimedia_pdf_page_extract -h
+    echo ""
+    echo "images"
+    echo -n "  "; multimedia_image_shrink_all -h
     echo ""
     echo "videos"
     echo -n "  "; multimedia_video_info -h
