@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #***************************[image]*******************************************
-# 2019 02 21
+# 2019 03 12
 
 function multimedia_image_shrink_all() {
 
@@ -43,20 +43,21 @@ function multimedia_image_shrink_all() {
         filter="$3"
     fi
 
-    ### old version using find and ffmpeg:
-    # iterate over all files
-    #find -maxdepth 1 -iname "$filter" -exec bash -c "
-    #  infile=\"\$(basename \"{}\")\"; echo \"  infile: \$infile\";
-    #  outfile=\"${prefix}\${infile}\"; echo \"  outfile: \$outfile\";
-    #  ffmpeg -loglevel quiet -i \"\${infile}\" \
-    #  -vf scale=w=$1:h=$1:force_original_aspect_ratio=decrease \
-    #  \"\${outfile}\"" \;
-    
-    ### new version using imagemagick
-    if [ "$prefix" == "" ]; then
-        # note: for mogrify the filenames must be placed after the resizing
-        mogrify -resize $1x$1\> $filter
-    else
-        convert $filter -resize $1x$1\> -set filename:new "${prefix}%f" "%[filename:new]"
-    fi
+    ### using find and ffmpeg
+    # simpler, but slower
+    find -maxdepth 1 -iname "$filter" -exec bash -c "
+      infile=\"\$(basename \"{}\")\"; echo \"  infile: \$infile\";
+      outfile=\"${prefix}\${infile}\"; echo \"  outfile: \$outfile\";
+      ffmpeg -loglevel quiet -i \"\${infile}\" \
+      -vf scale=w=$1:h=$1:force_original_aspect_ratio=decrease \
+      \"\${outfile}\"" \;
+
+    ### using imagemagick
+    # more efficient, but needs more cpu and ram
+    #if [ "$prefix" == "" ]; then
+    #    # note: for mogrify the filenames must be placed after the resizing
+    #    mogrify -resize $1x$1\> $filter
+    #else
+    #    convert $filter -resize $1x$1\> -set filename:new "${prefix}%f" "%[filename:new]"
+    #fi
 }
