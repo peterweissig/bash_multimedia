@@ -1,12 +1,15 @@
 #!/bin/bash
 
 #***************************[help]********************************************
-# 2019 02 20
+# 2019 09 10
 
 function multimedia_help() {
 
     echo ""
     echo "### $FUNCNAME ###"
+    echo ""
+    echo "help functions"
+    echo -n "  "; echo "$FUNCNAME  #no help"
     echo ""
     echo "pdf"
     echo -n "  "; multimedia_pdf_page_extract -h
