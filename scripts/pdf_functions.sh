@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#***************************[documents]***************************************
+#***************************[extraction from pdf]*****************************
 # 2018 08 24
 
 function multimedia_pdf_page_extract() {
@@ -81,3 +81,40 @@ function multimedia_pdf_images_extract() {
     pdfimages -p -png -j "${1}" "img/${tmp%.*}"
 }
 
+
+#***************************[conversion to pdf]*******************************
+# 2019 12 02
+
+temp="config/pandoc/new.latex"
+export MULTIMEDIA_PANDOC_TEMPLATE_FILE="${REPO_BASH_MULTIMEDIA}${temp}"
+
+function multimedia_pdf_from_markdown() {
+
+    # print help
+    if [ "$1" == "-h" ]; then
+        echo "$FUNCNAME <filename>"
+
+        return
+    fi
+    if [ "$1" == "--help" ]; then
+        echo "$FUNCNAME needs 1 parameter"
+        echo "     #1: document name        (e.g. memo.md)"
+        echo "The output file will have pdf as extension."
+        echo "  (e.g. memo.pdf)"
+
+        return
+    fi
+
+    # check parameter
+    if [ $# -ne 1 ]; then
+        echo "$FUNCNAME: Parameter Error."
+        $FUNCNAME --help
+        return -1
+    fi
+
+    tmp="$(basename "$1")"
+    echo -n "pandoc --template=\"$MULTIMEDIA_PANDOC_TEMPLATE_FILE\" "
+    echo "-o \"${tmp%.*}.pdf\" \"$1\""
+    pandoc --template="$MULTIMEDIA_PANDOC_TEMPLATE_FILE" \
+      -o "${tmp%.*}.pdf" "$1"
+}
