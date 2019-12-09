@@ -83,10 +83,12 @@ function multimedia_pdf_images_extract() {
 
 
 #***************************[conversion to pdf]*******************************
-# 2019 12 02
+# 2019 12 09
 
 temp="config/pandoc/new.latex"
 export MULTIMEDIA_PANDOC_TEMPLATE_FILE="${REPO_BASH_MULTIMEDIA}${temp}"
+
+alias pandoc_simple="multimedia_pdf_from_markdown"
 
 function multimedia_pdf_from_markdown() {
 
