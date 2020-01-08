@@ -143,11 +143,17 @@ function multimedia_pdf_from_markdown() {
     pandoc --template="$template" -o "${tmp%.*}.pdf" "$1"
 }
 
-# create aliases for all user templates
-if [ -d ${MULTIMEDIA_PANDOC_TEMPLATE_DIR} ]; then
+function _multimedia_pdf_from_markdown_create_aliases() {
+
+    # check if template dir exists
+    if [ ! -d ${MULTIMEDIA_PANDOC_TEMPLATE_DIR} ]; then
+        return
+    fi
+
     # read all files
     readarray -t filelist <<< "$(ls --quote-name \
-    "${MULTIMEDIA_PANDOC_TEMPLATE_DIR}"*.latex)"
+    "${MULTIMEDIA_PANDOC_TEMPLATE_DIR}"*.latex 2>> /dev/null)"
+
     # iterate over files
     for i in ${!filelist[@]}; do
         # remove outer quotes
@@ -171,7 +177,7 @@ if [ -d ${MULTIMEDIA_PANDOC_TEMPLATE_DIR} ]; then
         alias pandoc_$current_filename="_pandoc_template_helper \
         \"$current_filename\""
     done
-fi
+}
 
 function _pandoc_template_helper() {
 
@@ -196,6 +202,12 @@ function _pandoc_template_helper() {
         return
     fi
 
+    # check parameter
+    if [ $# -ne 2 ]; then
+        echo "$funcname: Parameter Error."
+        $FUNCNAME "$1" --help
+        return -1
+    fi
 
     if [ ! -e "$2" ]; then
         echo "$funcname: file \"$2\" does not exist."
@@ -205,3 +217,5 @@ function _pandoc_template_helper() {
     echo "multimedia_pdf_from_markdown \"$2\" \"$1\""
     multimedia_pdf_from_markdown "$2" "$1"
 }
+
+_multimedia_pdf_from_markdown_create_aliases
