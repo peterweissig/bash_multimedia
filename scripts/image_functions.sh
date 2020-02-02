@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #***************************[image]*******************************************
-# 2019 03 12
+# 2020 02 02
 
 function multimedia_image_shrink_all() {
 
@@ -31,10 +31,24 @@ function multimedia_image_shrink_all() {
         return -1
     fi
 
+    overwrite_flag=""
     if [ $# -lt 2 ]; then
         prefix="$1px_"
     else
         prefix="$2"
+
+        if [ "$2" == "" ]; then
+            echo "All image files will be overwritten."
+            echo -n "Do you wish to continue ? (No/yes)"
+            read answer
+            if [ "$answer" != "y" ] && [ "$answer" != "Y" ] && \
+              [ "$answer" != "yes" ]; then
+
+                echo "$FUNCNAME: Aborted."
+                return
+            fi
+        fi
+        overwrite_flag="-y"
     fi
 
     if [ $# -lt 3 ]; then
@@ -48,7 +62,7 @@ function multimedia_image_shrink_all() {
     find -maxdepth 1 -iname "$filter" -exec bash -c "
       infile=\"\$(basename \"{}\")\"; echo \"  infile: \$infile\";
       outfile=\"${prefix}\${infile}\"; echo \"  outfile: \$outfile\";
-      ffmpeg -loglevel quiet -i \"\${infile}\" \
+      ffmpeg -loglevel quiet ${overwrite_flag} -i \"\${infile}\" \
       -vf scale=w=$1:h=$1:force_original_aspect_ratio=decrease \
       \"\${outfile}\"" \;
 
