@@ -1,6 +1,11 @@
 #!/bin/bash
 
 #***************************[extraction from pdf]*****************************
+# 2020 04 21
+alias pdf_page_extract="multimedia_pdf_page_extract"
+alias pdf_images_extract="multimedia_pdf_images_extract"
+
+
 # 2018 08 24
 
 function multimedia_pdf_page_extract() {
