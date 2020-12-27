@@ -19,9 +19,9 @@ export SOURCED_BASH_MULTIMEDIA="$SOURCED_BASH_LAST"
 
 
 #***************************[paths and files]*********************************
-# 2018 11 17
+# 2020 12 27
 
-temp_local_path="$(cd "$(dirname "${BASH_SOURCE}")" && pwd )/"
+temp_local_path="$(realpath "$(dirname "${BASH_SOURCE}")" )/"
 
 
 #***************************[source]******************************************
