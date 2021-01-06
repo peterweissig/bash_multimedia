@@ -1,13 +1,13 @@
 #!/bin/bash
 
 #***************************[extraction from pdf]*****************************
-# 2020 04 21
+# 2021 01 06
 alias pdf_page_extract="multimedia_pdf_page_extract"
 alias pdf_images_extract="multimedia_pdf_images_extract"
+alias pdf_shrink="multimedia_pdf_shrink"
 
 
 # 2018 08 24
-
 function multimedia_pdf_page_extract() {
 
     # print help
@@ -43,7 +43,6 @@ function multimedia_pdf_page_extract() {
 }
 
 # 2018 11 15
-
 function multimedia_pdf_images_extract() {
 
     # print help
@@ -84,6 +83,74 @@ function multimedia_pdf_images_extract() {
 
     tmp="$(basename "$1")"
     pdfimages -p -png -j "${1}" "img/${tmp%.*}"
+}
+
+
+# 2020 01 06
+function multimedia_pdf_shrink() {
+
+    # print help
+    if [ "$1" == "-h" ]; then
+        echo "$FUNCNAME [--tiny] <filename>"
+
+        return
+    fi
+    if [ "$1" == "--help" ]; then
+        echo "$FUNCNAME needs 1 parameters"
+        echo "     #1: document name        (e.g. paper.pdf)"
+        echo "All images from the document will be stored in the local"
+        echo "  subfolder \"img/\"."
+        echo "  Naming will be <page_nr>-<img_nr>.<extension>"
+        echo "  (e.g. img/001-012.png)"
+
+        return
+    fi
+
+    # init variables
+    option_tiny=0
+    param_file=""
+
+    # check and get parameter
+    params_ok=0
+    if [ $# -ge 1 ] && [ $# -le 2 ]; then
+        params_ok=1
+        param_file="${@: -1}"
+        if [ $# -ge 2 ]; then
+            if [ "$1" == "--tiny" ]; then
+                option_tiny=1
+            else
+                params_ok=0
+            fi
+        fi
+    fi
+    if [ $params_ok -ne 1 ]; then
+        echo "$FUNCNAME: Parameter Error."
+        $FUNCNAME --help
+        return -1
+    fi
+
+    if [ ! -f "$param_file" ]; then
+        echo "$FUNCNAME: file \"$param_file\" does not exist."
+        return -1;
+    fi
+
+    # switch between ebook and screen options
+    if [ $option_tiny -eq 1 ]; then
+        output_file="${param_file%.*}_tiny.pdf"
+        pdfsettings="screen"
+    else
+        output_file="${param_file%.*}_compressed.pdf"
+        pdfsettings="ebook"
+    fi
+
+    gs -q -dNOPAUSE -dBATCH -dSAFER \
+      -sDEVICE=pdfwrite \
+      -sPDFSETTINGS="$pdfsettings" \
+      -dEmbedAllFonts=true \
+      -dCompressFonts=false \
+      -dAutoRotatePages=/None \
+      -sOutputFile="$output_file" \
+      "$param_file"
 }
 
 
