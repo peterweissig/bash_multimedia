@@ -42,6 +42,7 @@ function multimedia_pdf_page_extract() {
        ${3}
 }
 
+
 # 2018 11 15
 function multimedia_pdf_images_extract() {
 
@@ -154,6 +155,7 @@ function multimedia_pdf_shrink() {
 }
 
 
+
 #***************************[conversion to pdf]*******************************
 # 2020 01 08
 
@@ -164,6 +166,7 @@ export MULTIMEDIA_PANDOC_TEMPLATE_DEFAULT="${REPO_BASH_MULTIMEDIA}${temp}"
 
 alias pandoc_simple="_pandoc_template_helper \"\""
 
+# 2020 01 08
 function multimedia_pdf_from_markdown() {
 
     # print help
@@ -215,10 +218,11 @@ function multimedia_pdf_from_markdown() {
     pandoc --template="$template" -o "${tmp%.*}.pdf" "$1"
 }
 
+# 2021 03 24
 function _multimedia_pdf_from_markdown_create_aliases() {
 
     # check if template dir exists
-    if [ ! -d ${MULTIMEDIA_PANDOC_TEMPLATE_DIR} ]; then
+    if [ ! -d "${MULTIMEDIA_PANDOC_TEMPLATE_DIR}" ]; then
         return
     fi
 
@@ -251,6 +255,7 @@ function _multimedia_pdf_from_markdown_create_aliases() {
     done
 }
 
+# 2020 01 08
 function _pandoc_template_helper() {
 
     if [ "$1" == "" ]; then
@@ -289,5 +294,3 @@ function _pandoc_template_helper() {
     echo "multimedia_pdf_from_markdown \"$2\" \"$1\""
     multimedia_pdf_from_markdown "$2" "$1"
 }
-
-_multimedia_pdf_from_markdown_create_aliases
