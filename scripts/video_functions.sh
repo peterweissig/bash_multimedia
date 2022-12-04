@@ -30,6 +30,7 @@ function multimedia_video_info() {
     ffprobe "$1"
 }
 
+# 2022 11 06
 function multimedia_video_cut_simple() {
 
     # print help
@@ -66,6 +67,6 @@ function multimedia_video_cut_simple() {
     filename="${filename_path}/${filename_name}${filename_cut}.${filename_ext}"
 
     # create video
-    echo "avconv -i $3 -c:a copy -c:v copy -ss $1 -t $2 $filename"
-    avconv -i "$3" -c:a copy -c:v copy -ss "$1" -t "$2" "$filename"
+    echo "ffmpeg -i $3 -c:a copy -c:v copy -ss $1 -t $2 $filename"
+    ffmpeg -i "$3" -c:a copy -c:v copy -ss "$1" -t "$2" "$filename"
 }
