@@ -87,28 +87,28 @@ function multimedia_pdf_images_extract() {
 }
 
 
-# 2020 01 06
+# 2023 04 26
 function multimedia_pdf_shrink() {
 
     # print help
     if [ "$1" == "-h" ]; then
-        echo "$FUNCNAME [--tiny] <filename>"
+        echo "$FUNCNAME [--tiny | --printer] <filename>"
 
         return
     fi
     if [ "$1" == "--help" ]; then
         echo "$FUNCNAME needs 1 parameters"
         echo "     #1: document name        (e.g. paper.pdf)"
-        echo "All images from the document will be stored in the local"
-        echo "  subfolder \"img/\"."
-        echo "  Naming will be <page_nr>-<img_nr>.<extension>"
-        echo "  (e.g. img/001-012.png)"
+        echo "The pdf will be compressed and stored as selected:"
+        echo "  --tiny    --> 'screen'  quality, stored as xyz_tiny.pdf."
+        echo "  <default> --> 'ebook'   quality, stored as xyz_compressed.pdf."
+        echo "  --printer --> 'printer' quality, stored as xyz_printer.pdf."
 
         return
     fi
 
     # init variables
-    option_tiny=0
+    option_compression="compressed"
     param_file=""
 
     # check and get parameter
@@ -118,7 +118,9 @@ function multimedia_pdf_shrink() {
         param_file="${@: -1}"
         if [ $# -ge 2 ]; then
             if [ "$1" == "--tiny" ]; then
-                option_tiny=1
+                option_compression="tiny"
+            elif [ "$1" == "--printer" ]; then
+                option_compression="printer"
             else
                 params_ok=0
             fi
@@ -136,11 +138,12 @@ function multimedia_pdf_shrink() {
     fi
 
     # switch between ebook and screen options
-    if [ $option_tiny -eq 1 ]; then
-        output_file="${param_file%.*}_tiny.pdf"
+    output_file="${param_file%.*}_${option_compression}.pdf"
+    if [ "$option_compression" == "tiny" ]; then
         pdfsettings="screen"
-    else
-        output_file="${param_file%.*}_compressed.pdf"
+    elif [ "$option_compression" == "printer" ]; then
+        pdfsettings="printer"
+    else # default
         pdfsettings="ebook"
     fi
 
