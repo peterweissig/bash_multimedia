@@ -1,10 +1,10 @@
 #!/bin/bash
 
 #***************************[extraction from pdf]*****************************
-# 2021 01 06
-alias pdf_page_extract="multimedia_pdf_page_extract"
-alias pdf_images_extract="multimedia_pdf_images_extract"
-alias pdf_shrink="multimedia_pdf_shrink"
+# 2023 11 18
+function pdf_page_extract()   { multimedia_pdf_page_extract;   }
+function pdf_images_extract() { multimedia_pdf_images_extract; }
+function pdf_shrink()         { multimedia_pdf_shrink;         }
 
 
 # 2018 08 24
@@ -167,7 +167,8 @@ export MULTIMEDIA_PANDOC_TEMPLATE_DIR="${REPO_BASH_MULTIMEDIA}${temp}"
 temp="config/pandoc/new.latex"
 export MULTIMEDIA_PANDOC_TEMPLATE_DEFAULT="${REPO_BASH_MULTIMEDIA}${temp}"
 
-alias pandoc_simple="_pandoc_template_helper \"\""
+# 2023 11 18
+function pandoc_simple() { _pandoc_template_helper ""; }
 
 # 2020 01 08
 function multimedia_pdf_from_markdown() {
@@ -221,7 +222,7 @@ function multimedia_pdf_from_markdown() {
     pandoc --template="$template" -o "${tmp%.*}.pdf" "$1"
 }
 
-# 2021 03 24
+# 2023 11 18
 function _multimedia_pdf_from_markdown_create_aliases() {
 
     # check if template dir exists
@@ -252,13 +253,14 @@ function _multimedia_pdf_from_markdown_create_aliases() {
             continue;
         fi
 
-        # creates alias
-        alias pandoc_$current_filename="_pandoc_template_helper \
-        \"$current_filename\""
+        # create function
+        function pandoc_$current_filename() {
+            _pandoc_template_helper "$current_filename"
+        }
     done
 }
 
-# 2020 01 08
+# 2023 11 18
 function _pandoc_template_helper() {
 
     if [ "$1" == "" ]; then
@@ -276,7 +278,7 @@ function _pandoc_template_helper() {
     if [ "$2" == "--help" ]; then
         echo "$funcname needs 1 parameter"
         echo "     #1: document name        (e.g. memo.md)"
-        echo "This alias is calling multimedia_pdf_from_markdown:"
+        echo "This function is calling multimedia_pdf_from_markdown:"
         echo "    \$ multimedia_pdf_from_markdown \"#1\" $1"
 
         return
