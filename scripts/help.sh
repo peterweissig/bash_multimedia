@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #***************************[help]********************************************
-# 2021 10 10
+# 2023 10 06
 
 function multimedia_help() {
 
@@ -19,8 +19,8 @@ function multimedia_help() {
     echo "  _multimedia_pdf_from_markdown_create_aliases  #no help"
     echo ""
     echo "images"
-    echo -n "  "; multimedia_image_shrink_all -h
-    echo -n "  "; multimedia_image_cut -h
+    echo -n "  "; multimedia_images_shrink_all -h
+    echo -n "  "; multimedia_images_cut -h
     echo ""
     echo "videos"
     echo -n "  "; multimedia_video_info -h

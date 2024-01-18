@@ -2,8 +2,8 @@
 
 #***************************[image]*******************************************
 
-# 2020 02 02
-function multimedia_image_shrink_all() {
+# 2023 10 06
+function multimedia_images_shrink() {
 
     if [ "$1" == "-h" ]; then
         echo "$FUNCNAME <size> [<prefix>] [<filter>]"
@@ -78,8 +78,8 @@ function multimedia_image_shrink_all() {
 
 
 
-# 2021 10 10
-function multimedia_image_cut() {
+# 2023 10 06
+function multimedia_images_cut() {
 
     if [ "$1" == "-h" ]; then
         echo "$FUNCNAME <size> [<prefix>] [<filter>]"
