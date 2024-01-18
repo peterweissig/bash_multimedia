@@ -1,10 +1,10 @@
 #!/bin/bash
 
 #***************************[extraction from pdf]*****************************
-# 2023 11 18
-function pdf_page_extract()   { multimedia_pdf_page_extract;   }
-function pdf_images_extract() { multimedia_pdf_images_extract; }
-function pdf_shrink()         { multimedia_pdf_shrink;         }
+# 2024 01 18
+function pdf_page_extract()   { multimedia_pdf_page_extract   "$@"; }
+function pdf_images_extract() { multimedia_pdf_images_extract "$@"; }
+function pdf_shrink()         { multimedia_pdf_shrink         "$@"; }
 
 
 # 2018 08 24
