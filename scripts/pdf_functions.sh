@@ -167,8 +167,8 @@ export MULTIMEDIA_PANDOC_TEMPLATE_DIR="${REPO_BASH_MULTIMEDIA}${temp}"
 temp="config/pandoc/new.latex"
 export MULTIMEDIA_PANDOC_TEMPLATE_DEFAULT="${REPO_BASH_MULTIMEDIA}${temp}"
 
-# 2023 11 18
-function pandoc_simple() { _pandoc_template_helper ""; }
+# 2024 01 24
+function pandoc_simple() { _pandoc_template_helper "" "$@"; }
 
 # 2020 01 08
 function multimedia_pdf_from_markdown() {
@@ -222,7 +222,7 @@ function multimedia_pdf_from_markdown() {
     pandoc --template="$template" -o "${tmp%.*}.pdf" "$1"
 }
 
-# 2023 11 18
+# 2024 01 24
 function _multimedia_pdf_from_markdown_create_aliases() {
 
     # check if template dir exists
@@ -255,7 +255,7 @@ function _multimedia_pdf_from_markdown_create_aliases() {
 
         # create function
         function pandoc_$current_filename() {
-            _pandoc_template_helper "$current_filename"
+            _pandoc_template_helper "$current_filename" "$@"
         }
     done
 }
