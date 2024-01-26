@@ -222,7 +222,7 @@ function multimedia_pdf_from_markdown() {
     pandoc --template="$template" -o "${tmp%.*}.pdf" "$1"
 }
 
-# 2024 01 24
+# 2024 01 25
 function _multimedia_pdf_from_markdown_create_aliases() {
 
     # check if template dir exists
@@ -254,9 +254,9 @@ function _multimedia_pdf_from_markdown_create_aliases() {
         fi
 
         # create function
-        function pandoc_$current_filename() {
-            _pandoc_template_helper "$current_filename" "$@"
-        }
+        eval "function pandoc_$current_filename() {
+            _pandoc_template_helper \"$current_filename\" \"$@\"
+        }"
     done
 }
 
