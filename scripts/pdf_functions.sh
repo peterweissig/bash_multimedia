@@ -163,19 +163,20 @@ function multimedia_pdf_shrink() {
 # 2025 02 10
 
 temp="config/pandoc/user_templates/"
-export MULTIMEDIA_PANDOC_TEMPLATE_DIR="${REPO_BASH_MULTIMEDIA}${temp}"
-temp="config/pandoc/simple.latex"
-export MULTIMEDIA_PANDOC_TEMPLATE_DEFAULT="${REPO_BASH_MULTIMEDIA}${temp}"
+export MULTIMEDIA_PANDOC_TEMPLATE_USER_DIR="${REPO_BASH_MULTIMEDIA}${temp}"
+temp="config/pandoc/"
+export MULTIMEDIA_PANDOC_TEMPLATE_DEFAULT_DIR="${REPO_BASH_MULTIMEDIA}${temp}"
 
-# 2024 01 24
-function pandoc_simple() { _pandoc_template_helper "" "$@"; }
+# 2025 02 10
+function _pandoc_default() { _pandoc_template_helper "default" "$@"; }
+function pandoc_simple()   { _pandoc_template_helper "simple"  "$@"; }
 
-# 2020 01 08
+# 2025 02 10
 function multimedia_pdf_from_markdown() {
 
     # print help
     if [ "$1" == "-h" ]; then
-        echo "$FUNCNAME <filename>"
+        echo "$FUNCNAME <filename> [<template>]"
 
         return
     fi
@@ -196,6 +197,12 @@ function multimedia_pdf_from_markdown() {
         return -1
     fi
 
+    param_filename="$1"
+    param_template="default"
+    if [ $# -ge 2 ]; then
+        param_template="$2"
+    fi
+
     # check if file exists
     if [ ! -e "$1" ]; then
         echo "$FUNCNAME: file \"$1\" does not exist."
@@ -203,36 +210,36 @@ function multimedia_pdf_from_markdown() {
     fi
 
     # check/use template
-    if [ $# -lt 2 ] || [ "$2" == "" ]; then
-        template="$MULTIMEDIA_PANDOC_TEMPLATE_DEFAULT"
-        template_name="default"
+    template="$MULTIMEDIA_PANDOC_TEMPLATE_DEFAULT_DIR${param_template}.latex"
+    if [ -e "$template" ]; then
+        echo "using predefined template \"$param_template\""
     else
-        template="${MULTIMEDIA_PANDOC_TEMPLATE_DIR}${2}.latex"
-        template_name="$2"
+        template="${MULTIMEDIA_PANDOC_TEMPLATE_USER_DIR}${param_template}.latex"
     fi
     if [ ! -e "$template" ]; then
-        echo "$FUNCNAME: template \"$template_name\" does not exist."
+        echo "$FUNCNAME: template \"$param_template\" does not exist."
         echo "    ($template)"
         return -1;
     fi
 
     # call pandoc
-    tmp="$(basename "$1")"
-    echo "pandoc --template=\"$template\" -o \"${tmp%.*}.pdf\" \"$1\""
-    pandoc --template="$template" -o "${tmp%.*}.pdf" "$1"
+    tmp="$(basename "$param_filename")"
+    out_file="${tmp%.*}.pdf"
+    echo "pandoc --template=\"$template\" -o \"$out_file\" \"$param_filename\""
+    pandoc --template="$template" -o "$out_file" "$param_filename"
 }
 
-# 2026 01 27
+# 2025 02 10
 function _multimedia_pdf_from_markdown_create_aliases() {
 
     # check if template dir exists
-    if [ ! -d "${MULTIMEDIA_PANDOC_TEMPLATE_DIR}" ]; then
+    if [ ! -d "${MULTIMEDIA_PANDOC_TEMPLATE_USER_DIR}" ]; then
         return
     fi
 
     # read all files
     readarray -t filelist <<< "$(ls --quote-name \
-    "${MULTIMEDIA_PANDOC_TEMPLATE_DIR}"*.latex 2>> /dev/null)"
+    "${MULTIMEDIA_PANDOC_TEMPLATE_USER_DIR}"*.latex 2>> /dev/null)"
 
     # iterate over files
     for i in ${!filelist[@]}; do
@@ -260,42 +267,58 @@ function _multimedia_pdf_from_markdown_create_aliases() {
     done
 }
 
-# 2023 11 18
+# 2025 02 10
 function _pandoc_template_helper() {
 
-    if [ "$1" == "" ]; then
-        funcname="pandoc_simple"
-    else
-        funcname="pandoc_$1"
-    fi
-
-    # print help
-    if [ "$2" == "-h" ]; then
-        echo "$funcname <filename>"
-
+    if [ "$1" == "-h" ]; then
+        echo "$FUNCNAME <template> <filename>"
         return
     fi
-    if [ "$2" == "--help" ]; then
+    if [ "$1" == "--help" ]; then
+        echo "$FUNCNAME needs 2 parameters"
+        echo "     #1: template name        (e.g. simple)"
+        echo "     #2: document name        (e.g. memo.md)"
+        echo "This function is calling multimedia_pdf_from_markdown:"
+        echo "    \$ multimedia_pdf_from_markdown \"#2\" \"#1\""
+        return
+    fi
+
+    param_template="$1"
+    param_filename="$2"
+
+    if [ "$param_template" == "" ]; then
+        echo "$FUNCNAME: Parameter Error."
+        $FUNCNAME --help
+        return -1
+    fi
+
+    funcname="pandoc_$param_template"
+
+    # print help
+    if [ "$param_filename" == "-h" ]; then
+        echo "$funcname <filename>"
+        return
+    fi
+    if [ "$param_filename" == "--help" ]; then
         echo "$funcname needs 1 parameter"
         echo "     #1: document name        (e.g. memo.md)"
         echo "This function is calling multimedia_pdf_from_markdown:"
-        echo "    \$ multimedia_pdf_from_markdown \"#1\" $1"
-
+        echo "    \$ multimedia_pdf_from_markdown \"#1\" $param_template"
         return
     fi
 
     # check parameter
     if [ $# -ne 2 ]; then
         echo "$funcname: Parameter Error."
-        $FUNCNAME "$1" --help
+        $FUNCNAME "$param_template" --help
         return -1
     fi
 
-    if [ ! -e "$2" ]; then
-        echo "$funcname: file \"$2\" does not exist."
+    if [ ! -e "$param_filename" ]; then
+        echo "$funcname: file \"$param_filename\" does not exist."
         return -1
     fi
 
-    echo "multimedia_pdf_from_markdown \"$2\" \"$1\""
-    multimedia_pdf_from_markdown "$2" "$1"
+    echo "multimedia_pdf_from_markdown \"$param_filename\" $param_template"
+    multimedia_pdf_from_markdown "$param_filename" "$param_template"
 }
