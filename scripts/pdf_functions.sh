@@ -160,11 +160,11 @@ function multimedia_pdf_shrink() {
 
 
 #***************************[conversion to pdf]*******************************
-# 2020 01 08
+# 2025 02 10
 
 temp="config/pandoc/user_templates/"
 export MULTIMEDIA_PANDOC_TEMPLATE_DIR="${REPO_BASH_MULTIMEDIA}${temp}"
-temp="config/pandoc/new.latex"
+temp="config/pandoc/simple.latex"
 export MULTIMEDIA_PANDOC_TEMPLATE_DEFAULT="${REPO_BASH_MULTIMEDIA}${temp}"
 
 # 2024 01 24
