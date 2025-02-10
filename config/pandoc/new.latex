@@ -1,29 +1,47 @@
 % 28.11.2019
-% based on pandoc template default.latex from version 1.16.0.2
-
-% [EDIT]: added default values and set documentclass to scrartcl
-%         fontsize: 12pt
-%         language: ngerman
-%         paper   : a4
+%   + current version
+%     https://github.com/PeterWeissig/bash_multimedia/blob/master/config/pandoc/simple.latex
+%   + based on pandoc template default.latex from version 1.16.0.2
+%     https://github.com/PeterWeissig/bash_multimedia/blob/master/config/pandoc/default.latex
+%   + changes are marked with [EDIT1]
+%       - set default document class & properties
+%           * scrartcl
+%           * fontsize 12pt
+%           * paper A4
+%           * language ngerman
+%       - change font family to Sans
+%       - default line stretch of 1.15
+%       - set default margin to 2.5cm
+%       - always color links
+%           * never use bounding box
+%           * changed linkcolor to black
+%           * changed urlcolor  to light blue/green)
+%       - added header & footer
+%       - changed heading on titel page
+%
+%
+% [EDIT1]: added default values and set documentclass to scrartcl
+%          fontsize: 12pt
+%          language: ngerman
+%          paper   : a4
 \documentclass[$if(fontsize)$$fontsize$$else$12pt$endif$,$if(lang)$$babel-lang$$else$ngerman$endif$,$if(papersize)$$papersize$paper$else$a4$endif$,$for(classoption)$$classoption$$sep$,$endfor$]{scrartcl}
-
-% [EDIT]: added babel
+%
+% [EDIT1]: added babel
 \usepackage{babel}
-
-
+%
 $if(fontfamily)$
 \usepackage[$for(fontfamilyoptions)$$fontfamilyoptions$$sep$,$endfor$]{$fontfamily$}
 $else$
 \usepackage{lmodern}
 $endif$
-
-% [EDIT]: switch default font to sans
+%
+% [EDIT1]: switch default font to sans
 \renewcommand\familydefault{\sfdefault}
-
-% [EDIT]: added default value of 1.15x
+%
+% [EDIT1]: added default value of 1.15x
 \usepackage{setspace}
 \setstretch{$if(linestretch)$$linestretch$$else$1.15$endif$}
-
+%
 \usepackage{amssymb,amsmath}
 \usepackage{ifxetex,ifluatex}
 \usepackage{fixltx2e} % provides \textsubscript
@@ -67,11 +85,11 @@ $endif$
 \usepackage{microtype}
 \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
 }{}
-
-% [EDIT]: added default margin of 2.5cm
+%
+% [EDIT1]: added default margin of 2.5cm
 \usepackage[$if(geometry)$$for(geometry)$$geometry$$sep$,$endfor$$else$margin=2.5cm$endif$]{geometry}
-
-% [EDIT]: use colored links and updated default colors (for link and url)
+%
+% [EDIT1]: use colored links and updated default colors (for link and url)
 \usepackage{hyperref}
 \PassOptionsToPackage{usenames,dvipsnames}{color} % color is loaded by hyperref
 \hypersetup{unicode=true,
@@ -81,15 +99,16 @@ $endif$
 $if(author-meta)$
             pdfauthor={$author-meta$},
 $endif$
+$if(keywords)$
             pdfkeywords={$for(keywords)$$keywords$$sep$; $endfor$},
+$endif$
             colorlinks=true,
             linkcolor=$if(linkcolor)$$linkcolor$$else$Black$endif$,
             citecolor=$if(citecolor)$$citecolor$$else$Blue$endif$,
-            urlcolor=$if(urlcolor)$$urlcolor$$else$[rgb]{0,0.69,0.941}$endif$,            
+            urlcolor=$if(urlcolor)$$urlcolor$$else$[rgb]{0,0.69,0.941}$endif$,
             breaklinks=true}
-            
+%
 \urlstyle{same}  % don't use monospace font for urls
-
 $if(lang)$
 \ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
   \usepackage[shorthands=off,$for(babel-otherlangs)$$babel-otherlangs$,$endfor$main=$babel-lang$]{babel}
@@ -197,8 +216,8 @@ $if(dir)$
   \newenvironment{LTR}{\beginL}{\endL}
 \fi
 $endif$
-
-% [EDIT]: added/update header and footer
+%
+% [EDIT1]: added/update header and footer
 \usepackage[automark]{scrlayer-scrpage}
 % Use Header and Footer
 \pagestyle{scrheadings}
@@ -218,23 +237,24 @@ $endif$
 \ifoot*{$author$}
 \cfoot*{Seite \thepage{}}
 \ofoot*{$if(date)$$date$$else$\today$endif$}
+%
 
 $for(header-includes)$
 $header-includes$
 $endfor$
 
-% [EDIT]: no title anymore (we use section heading instead)
-$if(title)$
-$endif$
+%
+% [EDIT1]: no title anymore (we use section heading instead)
+%
 
 \begin{document}
-
-% [EDIT]: changed title to section heading (and remove heading on title page)
+%
+% [EDIT1]: changed title to section heading (and remove heading on title page)
 $if(title)$
 \section*{$title$}\label{title}
 \thispagestyle{plain.scrheadings}
 $endif$
-
+%
 $if(abstract)$
 \begin{abstract}
 $abstract$

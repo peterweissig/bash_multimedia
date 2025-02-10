@@ -1,3 +1,6 @@
+% 28.11.2019
+%   + pandoc template default.latex from version 1.16.0.2
+%
 \documentclass[$if(fontsize)$$fontsize$,$endif$$if(lang)$$babel-lang$,$endif$$if(papersize)$$papersize$paper,$endif$$for(classoption)$$classoption$$sep$,$endfor$]{$documentclass$}
 $if(fontfamily)$
 \usepackage[$for(fontfamilyoptions)$$fontfamilyoptions$$sep$,$endfor$]{$fontfamily$}
@@ -185,8 +188,6 @@ $if(dir)$
   \newenvironment{LTR}{\beginL}{\endL}
 \fi
 $endif$
-% 28.11.2019
-% pandoc template default.latex from version 1.16.0.2
 
 $for(header-includes)$
 $header-includes$
