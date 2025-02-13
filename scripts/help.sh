@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #***************************[help]********************************************
-# 2023 10 06
+# 2025 02 12
 
 function multimedia_help() {
 
@@ -15,11 +15,12 @@ function multimedia_help() {
     echo -n "  "; multimedia_pdf_page_extract -h
     echo -n "  "; multimedia_pdf_images_extract -h
     echo -n "  "; multimedia_pdf_shrink -h
-    echo -n "  "; multimedia_pdf_from_markdown -h
-    echo "  _multimedia_pdf_from_markdown_create_aliases  #no help"
+    echo ""
+    echo -n "  "; pandoc_simple -h
+    echo -n "  "; pandoc_meeting -h
     echo ""
     echo "images"
-    echo -n "  "; multimedia_images_shrink_all -h
+    echo -n "  "; multimedia_images_shrink -h
     echo -n "  "; multimedia_images_cut -h
     echo ""
     echo "videos"
