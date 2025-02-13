@@ -1,4 +1,4 @@
-% 12.02.2025
+% 13.02.2025
 %   + current version
 %     https://github.com/PeterWeissig/bash_multimedia/blob/master/config/pandoc/meeting.latex
 %   + based on pandoc template simple.latex from 28.11.2019
@@ -9,8 +9,9 @@
 %         (also consider header & footer)
 %       - removing prefix from captions, e.g. on tables
 %       - added convenience short cuts
-%           ~ \ok    ->  \checkmark
 %           ~ \shade ->  gray textcolor
+%           ~ \ok    ->  \checkmark
+%           ~ \ex    ->  gray "E"
 %       - added colored boxes for highlighting
 %           ~ highlight=="wichtig", internal=="intern" & secret=="geheim"
 %           ~ throw an error if selected box does not match the mode
@@ -83,20 +84,25 @@ $endif$
 \usepackage{caption}
 \captionsetup{labelformat=empty}
 % [EDIT2]: added convenience short cuts
-%          (\ok -> \checkmark, \shade ->  gray textcolor)
-\newcommand{\ok}{\checkmark}
+%          (\shade ->  gray textcolor, \ok -> \checkmark, \ex -> gray "E")
 \newcommand{\shade}[1]{\textcolor{gray}{#1}}
+\newcommand{\ok}{\checkmark}
+\newcommand{\ex}{\shade{E}}
 %
 % [EDIT2]: added colored boxes for highlighting
 %          (highlight=="wichtig", internal=="intern" & secret=="geheim")
 \usepackage{tcolorbox}
-\newtcbox{\wichtig}{colback=yellow!5!white,boxrule=0.1pt}
-\newtcolorbox{GenericTcBoxEnvironment}[1][yellow]{%
-  colback=#1!5!white,colframe=#1!75!black}
-\newcommand{\AnfangWichtig}{\begin{tcolorbox}%
-    [colback=yellow!5!white,boxrule=0.1pt]%
-}
+\newtcbox{\wichtig}{
+    colback=yellow!5!white,
+    boxrule=0.1pt}
+\newcommand{\AnfangWichtig}{\begin{tcolorbox}[
+    colback=yellow!5!white,
+    boxrule=0.1pt]}
 \newcommand{\EndeWichtig}{\end{tcolorbox}}
+\newcommand{\BreakWichtig}{
+  \EndeWichtig{}
+  \newpage{}
+  \AnfangWichtig{} }
 % show secret notes only if ((mode==intern) ^ (mode==geheim)) && (mode!=public)
 \ifnum 0$if(modeIntern)$1$endif$$if(modeGeheim)$1$endif$=1$if(modePublic)$0$endif$
     \newtcbox{\intern}{
@@ -106,6 +112,10 @@ $endif$
         colback=orange!5!white,
         colframe=orange!75!black]}
     \newcommand{\EndeIntern}{\end{tcolorbox}}
+    \newcommand{\BreakIntern}{
+        \EndeIntern{}
+        \newpage{}
+        \AnfangIntern{} }
 \else
     \newcommand{\InternError}{\PackageError{meeting.latex}
         {Internal sections ("intern") are not available!
@@ -114,6 +124,7 @@ $endif$
     \newcommand{\intern}[1]{\InternError}
     \newcommand{\AnfangIntern}{\InternError}
     \newcommand{\EndeIntern}{\InternError}
+    \newcommand{\BreakIntern}{\InternError}
 \fi
 % show secret notes only if (mode==geheim) && (mode!=public) && (mode!=intern)
 \ifnum 0$if(modeGeheim)$1$endif$=1$if(modePublic)$0$endif$$if(modeIntern)$0$endif$
@@ -124,6 +135,10 @@ $endif$
         colback=red!10!white,
         colframe=red!75!black]}
     \newcommand{\EndeGeheim}{\end{tcolorbox}}
+    \newcommand{\BreakGeheim}{
+        \EndeGeheim{}
+        \newpage{}
+        \AnfangGeheim{} }
 \else
     \newcommand{\GeheimError}{\PackageError{meeting.latex}
         {Secret sections ("geheim") are not available!
@@ -132,6 +147,7 @@ $endif$
     \newcommand{\geheim}[1]{\GeheimError}
     \newcommand{\AnfangGeheim}{\GeheimError}
     \newcommand{\EndeGeheim}{\GeheimError}
+    \newcommand{\BreakGeheim}{\GeheimError}
 \fi
 %
 \usepackage{hyperref}
