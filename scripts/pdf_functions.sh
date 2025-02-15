@@ -207,6 +207,7 @@ function _pandoc_meeting_helper(){
     echo "-e s/@e/}/g -e s/@s/{/g -e s/@o/@/g"
 }
 
+# 2025 02 14
 function pandoc_meeting(){
 
     # print help
@@ -321,6 +322,7 @@ function pandoc_meeting(){
             if [ $? -ne 0 ]; then return -6; fi
         fi
     )
+    if [ $? -ne 0 ]; then return -6; fi
 
     # rename public output
     echo ""
