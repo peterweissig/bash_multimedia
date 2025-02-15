@@ -1,12 +1,11 @@
-% 13.02.2025
+% 14.02.2025
 %   + current version
 %     https://github.com/PeterWeissig/bash_multimedia/blob/master/config/pandoc/meeting.latex
 %   + based on pandoc template simple.latex from 28.11.2019
 %     https://github.com/PeterWeissig/bash_multimedia/blob/master/config/pandoc/simple.latex
 %   + changes are marked with [EDIT2]
 %       - changed default fontsize from 12pt  to 10pt
-%       - changed default margin   from 2.5cm to 1.5cm
-%         (also consider header & footer)
+%       - changed default margins
 %       - removing prefix from captions, e.g. on tables
 %       - added convenience short cuts
 %           ~ \shade ->  gray textcolor
@@ -17,6 +16,9 @@
 %           ~ throw an error if selected box does not match the mode
 %             (public==default, internal=="modeIntern" or secret=="modeGeheim")
 %       - fixed color names for links
+%       - changed headings
+%           ~ moved title on first page to headings
+%           ~ added small hints on each page for secret or internal mode
 %       - enable table of contents per default
 %         (disable via "notoc")
 %
@@ -77,8 +79,13 @@ $endif$
 \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
 }{}
 %
-% [EDIT2]: changed default margin to 1.5cm, but consider header & footer
-\usepackage[$if(geometry)$$for(geometry)$$geometry$$sep$,$endfor$$else$margin=1.5cm,includefoot,includehead$endif$]{geometry}
+% [EDIT2]: changed default margins
+\usepackage[
+    margin=2cm, bottom=1.5cm, footskip=1cm,
+    top=$if(modeGeheim)$2.5cm$else$$if(modeIntern)$2.5cm$else$1.5cm$endif$$endif$,
+    includehead, includefoot,
+    $if(geometry)$$for(geometry)$$geometry$$sep$,$endfor$$else$$endif$%
+]{geometry}
 %
 % [EDIT2]: removing prefix from captions, e.g. on tables
 \usepackage{caption}
@@ -277,19 +284,32 @@ $if(dir)$
   \newenvironment{LTR}{\beginL}{\endL}
 \fi
 $endif$
-\usepackage[automark]{scrlayer-scrpage}
+%
+% [EDIT2]: changed headings
+%          + removed option "automark"
+\usepackage{scrlayer-scrpage}
+%
 \pagestyle{scrheadings}
 \clearpairofpagestyles
 \renewcommand{\headfont}{\normalfont}
+%
+% [EDIT2]: changed headings
+%          + added caption on first page
+%          + simplified shrank caption
+%          + added small hints on each page for secret or internal mode
 $if(title)$
-\chead{
-    \begin{tabular}{c}
-        \textbf{
-            $title$
-        } \\
-    \end{tabular}
-}
+    \chead[\Large{\textbf{$title$}}]{\textbf{$title$}}
 $endif$
+\ifnum 0$if(modeGeheim)$1$endif$=1
+    \ihead*{\geheim{geheim}}
+    \ohead*{\geheim{geheim}}
+\else
+    \ifnum 0$if(modeIntern)$1$endif$=1
+        \ihead*{\intern{intern}}
+        \ohead*{\intern{intern}}
+    \fi
+\fi
+%
 \ifoot*{$author$}
 \cfoot*{Seite \thepage{}}
 \ofoot*{$if(date)$$date$$else$\today$endif$}
@@ -299,8 +319,10 @@ $header-includes$
 $endfor$
 
 \begin{document}
+%
+% [EDIT2]: changed headings
+%          + removed explicit title on first page
 $if(title)$
-\section*{$title$}\label{title}
 \thispagestyle{plain.scrheadings}
 $endif$
 $if(abstract)$
