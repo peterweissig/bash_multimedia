@@ -251,7 +251,7 @@ function pandoc_meeting(){
     mkdir -p "$export_dir"
 
     file_fullname="$(basename "$param_filename")"
-    file_ext="${file_fullname##*.}"
+    file_ext="txt" # "${file_fullname##*.}"
     file_name="${file_fullname%.*}"
 
     file_geheim_local="${file_name}__geheim.${file_ext}"
@@ -308,18 +308,24 @@ function pandoc_meeting(){
             echo "- convert secret   input"
             pandoc_meeting_geheim "$file_geheim_local"
             if [ $? -ne 0 ]; then return -6; fi
+            echo "- adopt line endings of secret   input"
+            sed -z -i -e "s/\n?\r?$/\n\r/g" "$file_geheim_local"
         fi
 
         if [ -f "$file_intern_local" ]; then
             echo "- convert internal input"
             pandoc_meeting_intern "$file_intern_local"
             if [ $? -ne 0 ]; then return -6; fi
+            echo "- adopt line endings of internal input"
+            sed -z -i -e "s/\n?\r?$/\n\r/g" "$file_intern_local"
         fi
 
         if [ -f "$file_public_local" ]; then
             echo "- convert public   input"
             pandoc_meeting_public "$file_public_local"
             if [ $? -ne 0 ]; then return -6; fi
+            echo "- adopt line endings of public   input"
+            sed -z -i -e "s/\n?\r?$/\n\r/g" "$file_public_local"
         fi
     )
     if [ $? -ne 0 ]; then return -6; fi
