@@ -156,6 +156,25 @@ $endif$
     \newcommand{\EndeGeheim}{\GeheimError}
     \newcommand{\BreakGeheim}{\GeheimError}
 \fi
+% add page break for selected modes only
+% if ((mode==public) && (mode!=intern) && (mode!=geheim))
+\ifnum 0$if(modePublic)$1$endif$=1$if(modeIntern)$0$endif$$if(modeGeheim)$0$endif$
+    \newcommand{\newpagePublic}{\newpage}
+\else
+    \newcommand{\newpagePublic}{}
+\fi
+% if ((mode==intern) && (mode!=public) && (mode!=geheim))
+\ifnum 0$if(modeIntern)$1$endif$=1$if(modePublic)$0$endif$$if(modeGeheim)$0$endif$
+    \newcommand{\newpageIntern}{\newpage}
+\else
+    \newcommand{\newpageIntern}{}
+\fi
+% if ((mode==geheim) && (mode!=public) && (mode!=intern))
+\ifnum 0$if(modeGeheim)$1$endif$=1$if(modePublic)$0$endif$$if(modeIntern)$0$endif$
+    \newcommand{\newpageGeheim}{\newpage}
+\else
+    \newcommand{\newpageGeheim}{}
+\fi
 %
 \usepackage{hyperref}
 % [EDIT2]: fixed color names for links
