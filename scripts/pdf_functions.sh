@@ -309,7 +309,7 @@ function pandoc_meeting(){
             pandoc_meeting_geheim "$file_geheim_local"
             if [ $? -ne 0 ]; then return -6; fi
             echo "- adopt line endings of secret   input"
-            sed -z -i -e "s/\n?\r?$/\n\r/g" "$file_geheim_local"
+            sed -z -i -E -e 's/(\n\r?|\n?\r)$/\n\r/g' "$file_geheim_local"
         fi
 
         if [ -f "$file_intern_local" ]; then
@@ -317,7 +317,7 @@ function pandoc_meeting(){
             pandoc_meeting_intern "$file_intern_local"
             if [ $? -ne 0 ]; then return -6; fi
             echo "- adopt line endings of internal input"
-            sed -z -i -e "s/\n?\r?$/\n\r/g" "$file_intern_local"
+            sed -z -i -E -e 's/(\n\r?|\n?\r)$/\n\r/g' "$file_intern_local"
         fi
 
         if [ -f "$file_public_local" ]; then
@@ -325,7 +325,7 @@ function pandoc_meeting(){
             pandoc_meeting_public "$file_public_local"
             if [ $? -ne 0 ]; then return -6; fi
             echo "- adopt line endings of public   input"
-            sed -z -i -e "s/\n?\r?$/\n\r/g" "$file_public_local"
+            sed -z -i -E -e 's/(\n\r?|\n?\r)$/\n\r/g' "$file_public_local"
         fi
     )
     if [ $? -ne 0 ]; then return -6; fi
