@@ -88,13 +88,14 @@ function multimedia_videos_shrink() {
 
     ### using find and ffmpeg
     find -maxdepth 1 -iname "$filter" -exec bash -c "
+      folder=\"\$(dirname \"{}\")/\";
       infile=\"\$(basename \"{}\")\"; echo \"  infile: \$infile\";
       outfile=\"${prefix}\${infile}\"; echo \"  outfile: \$outfile\";
-      ffmpeg -loglevel quiet -i \"\${infile}\" \
-        -vcodec libx265 -crf ${crf} \"\${outfile}\"
+      ffmpeg -loglevel quiet -i \"\${folder}\${infile}\" \
+        -vcodec libx265 -crf ${crf} \"\${folder}\${outfile}\"
       if [ $overwrite -ne 0 ]; then
           echo \"mv: \$outfile --> \$infile\";
-          mv \"\${outfile}\" \"\${infile}\";
+          mv \"\${folder}\${outfile}\" \"\${folder}\${infile}\";
       fi;
       " \;
 }

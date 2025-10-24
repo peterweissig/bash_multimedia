@@ -2,7 +2,7 @@
 
 #***************************[image]*******************************************
 
-# 2023 10 06
+# 2025 10 23
 function multimedia_images_shrink() {
 
     if [ "$1" == "-h" ]; then
@@ -60,11 +60,12 @@ function multimedia_images_shrink() {
     ### using find and ffmpeg
     # simpler, but slower
     find -maxdepth 1 -iname "$filter" -exec bash -c "
+      folder=\"\$(dirname \"{}\")/\";
       infile=\"\$(basename \"{}\")\"; echo \"  infile: \$infile\";
       outfile=\"${prefix}\${infile}\"; echo \"  outfile: \$outfile\";
-      ffmpeg -loglevel quiet ${overwrite_flag} -i \"\${infile}\" \
+      ffmpeg -loglevel quiet ${overwrite_flag} -i \"\${folder}\${infile}\" \
       -vf scale=w=$1:h=$1:force_original_aspect_ratio=decrease \
-      \"\${outfile}\"" \;
+      \"\${folder}\${outfile}\"" \;
 
     ### using imagemagick
     # more efficient, but needs more cpu and ram
