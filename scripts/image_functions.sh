@@ -17,7 +17,7 @@ function multimedia_images_shrink() {
         echo "         if not set, the given size will be used"
         echo "         (e.g. '1920px_')"
         echo "    [#3:]search-expression (default \"*.jpg\")"
-        echo "The images will be shrinked to the given size and renamed."
+        echo "The images will be shrunk to the given size and renamed."
         echo "  (e.g. from image.jpg with 3840x2160"
         echo "   to shrink_image.jpg with 1920x1080)"
 

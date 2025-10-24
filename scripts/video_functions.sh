@@ -30,6 +30,75 @@ function multimedia_video_info() {
     ffprobe "$1"
 }
 
+# 2025 10 23
+function multimedia_videos_shrink() {
+
+    if [ "$1" == "-h" ]; then
+        echo "$FUNCNAME <compression> [<prefix>] [<filter>]"
+
+        return
+    fi
+    if [ "$1" == "--help" ]; then
+        echo "$FUNCNAME needs 1-3 parameters"
+        echo "     #1: Compression (Constant Rate Factor 24..30)"
+        echo "    [#2:]additional prefix for reduced files (e.g. shrink_)"
+        echo "         if not set, the given crf will be used"
+        echo "         (e.g. 'crf24_')"
+        echo "    [#3:]search-expression (default \"*.jpg\")"
+        echo "The videos will be shrunk with the given CRF."
+        echo "  (e.g. from video.mp4 to shrink_video.mp4 with CRF=24)"
+
+        return
+    fi
+
+    # check parameter
+    if [ $# -lt 1 ] || [ $# -gt 3 ]; then
+        echo "$FUNCNAME: Parameter Error."
+        $FUNCNAME --help
+        return -1
+    fi
+    crf="$1"
+
+    overwrite=0
+    if [ $# -lt 2 ]; then
+        prefix="crf${crf}_"
+    else
+        prefix="$2"
+
+        if [ "$2" == "" ]; then
+            echo "All video files will be overwritten."
+            echo -n "Do you wish to continue ? (No/yes)"
+            read answer
+            if [ "$answer" != "y" ] && [ "$answer" != "Y" ] && \
+              [ "$answer" != "yes" ]; then
+
+                echo "$FUNCNAME: Aborted."
+                return
+            fi
+            overwrite=1
+            prefix="shrink_"
+        fi
+    fi
+
+    if [ $# -lt 3 ]; then
+        filter="*.mp4"
+    else
+        filter="$3"
+    fi
+
+    ### using find and ffmpeg
+    find -maxdepth 1 -iname "$filter" -exec bash -c "
+      infile=\"\$(basename \"{}\")\"; echo \"  infile: \$infile\";
+      outfile=\"${prefix}\${infile}\"; echo \"  outfile: \$outfile\";
+      ffmpeg -loglevel quiet -i \"\${infile}\" \
+        -vcodec libx265 -crf ${crf} \"\${outfile}\"
+      if [ $overwrite -ne 0 ]; then
+          echo \"mv: \$outfile --> \$infile\";
+          mv \"\${outfile}\" \"\${infile}\";
+      fi;
+      " \;
+}
+
 # 2022 11 06
 function multimedia_video_cut_simple() {
 
