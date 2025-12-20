@@ -2,20 +2,21 @@
 
 #***************************[image]*******************************************
 
-# 2025 10 23
+# 2025 12 20
 function multimedia_images_shrink() {
 
     if [ "$1" == "-h" ]; then
-        echo "$FUNCNAME <size> [<prefix>] [<filter>]"
+        echo "$FUNCNAME [<size>] [<prefix>] [<filter>]"
 
         return
     fi
     if [ "$1" == "--help" ]; then
         echo "$FUNCNAME needs 1-3 parameters"
-        echo "     #1: longest side of reduced image (e.g. 1920)"
+        echo "    [#1:]longest side of reduced image (e.g. 1920)"
+        echo "         if not set, the original size will not be changed"
         echo "    [#2:]additional prefix for reduced files (e.g. shrink_)"
         echo "         if not set, the given size will be used"
-        echo "         (e.g. '1920px_')"
+        echo "         (e.g. '1920px_' or 'shrink_')"
         echo "    [#3:]search-expression (default \"*.jpg\")"
         echo "The images will be shrunk to the given size and renamed."
         echo "  (e.g. from image.jpg with 3840x2160"
@@ -25,15 +26,24 @@ function multimedia_images_shrink() {
     fi
 
     # check parameter
-    if [ $# -lt 1 ] || [ $# -gt 3 ]; then
+    if [ $# -gt 3 ]; then
         echo "$FUNCNAME: Parameter Error."
         $FUNCNAME --help
         return -1
     fi
+    
+    shrink_flags=""
+    if [ "$1" != "" ]; then
+        shrink_flags="-vf scale=w=$1:h=$1:force_original_aspect_ratio=decrease"
+    fi
 
     overwrite_flag=""
     if [ $# -lt 2 ]; then
-        prefix="$1px_"
+        if [ "$1" == "" ]; then
+            prefix="shrink_"
+        else
+            prefix="$1px_"
+        fi
     else
         prefix="$2"
 
@@ -64,8 +74,7 @@ function multimedia_images_shrink() {
       infile=\"\$(basename \"{}\")\"; echo \"  infile: \$infile\";
       outfile=\"${prefix}\${infile}\"; echo \"  outfile: \$outfile\";
       ffmpeg -loglevel quiet ${overwrite_flag} -i \"\${folder}\${infile}\" \
-      -vf scale=w=$1:h=$1:force_original_aspect_ratio=decrease \
-      \"\${folder}\${outfile}\"" \;
+      ${shrink_flags} \"\${folder}\${outfile}\"" \;
 
     ### using imagemagick
     # more efficient, but needs more cpu and ram
