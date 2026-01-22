@@ -1,5 +1,40 @@
 #!/bin/bash
 
+#***************************[joining pdf]*************************************
+# 2026 01 22
+function pdf_join()   { multimedia_pdf_join "$@"; }
+
+
+# 2026 01 22
+function multimedia_pdf_join() {
+
+    # print help
+    if [ "$1" == "-h" ]; then
+        echo "$FUNCNAME <filename1> [<filename2> ...]"
+
+        return
+    fi
+    if [ "$1" == "--help" ]; then
+        echo "$FUNCNAME needs at least 1 parameter"
+        echo "    ...: all parameters/files will be passed to pdfjam"
+        echo "The output file will be named"
+        echo "  \"<filename1>_joined.pdf\"."
+
+        return
+    fi
+
+    # check parameter
+    if [ $# -eq 0 ]; then
+        echo "$FUNCNAME: Parameter Error."
+        $FUNCNAME --help
+        return -1
+    fi
+
+    pdfjam --fitpaper true --suffix joined "$@"
+}
+
+
+
 #***************************[extraction from pdf]*****************************
 # 2024 01 18
 function pdf_page_extract()   { multimedia_pdf_page_extract   "$@"; }

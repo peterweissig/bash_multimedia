@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #***************************[help]********************************************
-# 2025 10 23
+# 2026 01 22
 
 function multimedia_help() {
 
@@ -12,6 +12,7 @@ function multimedia_help() {
     echo -n "  "; echo "$FUNCNAME  #no help"
     echo ""
     echo "pdf"
+    echo -n "  "; multimedia_pdf_join -h
     echo -n "  "; multimedia_pdf_page_extract -h
     echo -n "  "; multimedia_pdf_images_extract -h
     echo -n "  "; multimedia_pdf_shrink -h
