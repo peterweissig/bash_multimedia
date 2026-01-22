@@ -44,7 +44,7 @@ function multimedia_videos_shrink() {
         echo "    [#2:]additional prefix for reduced files (e.g. shrink_)"
         echo "         if not set, the given crf will be used"
         echo "         (e.g. 'crf24_')"
-        echo "    [#3:]search-expression (default \"*.jpg\")"
+        echo "    [#3:]search-expression (default \"*.mp4\")"
         echo "The videos will be shrunk with the given CRF."
         echo "  (e.g. from video.mp4 to shrink_video.mp4 with CRF=24)"
 
